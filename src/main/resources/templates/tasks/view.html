@@ -20,8 +20,13 @@
 
       <!-- Название задачи -->
       <div class="mb-3">
-        <label class="form-label"><b>Название задачи</b></label>
-        <div class="form-control-plaintext border p-3" th:text="${task.description}"></div>
+        <label class="form-label"><b>Задача</b></label>
+        <div class="form-control-plaintext border p-3" th:text="${task.title}"></div>
+      </div>
+
+      <!-- Описание задачи -->
+      <div class="form-control border p-3" style="white-space: pre-wrap;"
+           th:text="${task.description}">
       </div>
 
       <!-- Статус выполнения -->
@@ -44,7 +49,7 @@
       <!-- Кнопки действий -->
       <div class="mt-4">
         <!-- Кнопка "Назад к списку" -->
-        <a th:href="@{/tasks}" class="btn btn-secondary">Назад к списку</a>
+        <a th:href="@{/index}" class="btn btn-secondary">Назад к списку</a>
 
         <!-- Кнопка "Редактировать" -->
         <a th:href="@{/tasks/{id}/edit(id=${task.id})}" class="btn btn-primary">Редактировать</a>
@@ -57,10 +62,11 @@
 
           <!-- Скрытые поля для передачи данных задачи -->
           <input type="hidden" name="id" th:value="${task.id}">
+          <input type="hidden" name="title" th:value="${task.title}">
           <input type="hidden" name="description" th:value="${task.description}">
           <input type="hidden" name="done" value="true">
 
-          <button type="submit" class="btn btn-success">Отметить как выполненное</button>
+          <button type="submit" class="btn btn-success">Выполнить</button>
         </form>
 
         <!-- Кнопка "Удалить" -->

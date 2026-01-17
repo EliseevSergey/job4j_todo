@@ -1,6 +1,8 @@
 package ru.job4j.service;
 
 import org.springframework.stereotype.Service;
+import ru.job4j.handlers.TaskNotFoundException;
+import ru.job4j.handlers.TaskUpdateException;
 import ru.job4j.model.Task;
 import ru.job4j.repository.TaskRepository;
 
@@ -26,20 +28,30 @@ public class SimpleTaskService implements TaskService {
     }
 
     @Override
-    public Optional<Task> findById(Integer id) {
-        return taskRepository.findById(id);
+    public Task findById(Integer id) {
+        Task task = taskRepository.findById(id); // может вернуть null
+        if (task == null) {
+            throw new TaskNotFoundException("Задача с id " + id + " не найдена");
+        }
+        return task;
     }
 
     @Override
     public boolean update(Task task) {
-        return taskRepository.update(task);
+        boolean updated = taskRepository.update(task); // вызываем один раз
+        if (!updated) {
+            throw new TaskUpdateException("Обновление задачи с id " + task.getId() + " не выполнено");
+        }
+        return true;
     }
 
-    @Override
-    public void delete(Integer id) {
-        taskRepository.delete(id);
+    public boolean delete(Integer taskId) {
+        boolean deleted = taskRepository.delete(taskId);
+        if (!deleted) {
+            throw new TaskNotFoundException("Задача с id " + taskId + " не найдена");
+        }
+        return true;
     }
-
 
     @Override
     public Collection<Task> getCompleted() {

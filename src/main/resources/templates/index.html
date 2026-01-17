@@ -52,6 +52,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Задача</th>
+                        <th scope="col">Описание</th>
                         <th scope="col">Дата Создания</th>
                         <th scope="col">Состояние</th>
                     </tr>
@@ -60,9 +61,10 @@
                     <tr th:each="task : ${tasks}">
                         <td th:text="${task.id}"/>
                         <td>
-                            <a th:href="@{/tasks/{taskId}(taskId=${task.id})}" th:text="${task.description}"></a>
+                            <a th:href="@{/tasks/{taskId}(taskId=${task.id})}" th:text="${task.title}"></a>
                         </td>
-                        <td th:text="${task.created}"/>
+                        <td th:text="${task.description}"/>
+                        <td th:text="${#temporals.format(task.created, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td th:text="${task.done}"/>
                     </tr>
                     </tbody>

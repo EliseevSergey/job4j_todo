@@ -1,16 +1,20 @@
 package ru.job4j.repository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+import ru.job4j.handlers.TaskNotFoundException;
+import ru.job4j.handlers.TaskUpdateException;
 import ru.job4j.model.Task;
 import java.util.Collection;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
+@Slf4j
 public class TaskStore implements TaskRepository {
     private final SessionFactory sf;
 
@@ -24,6 +28,7 @@ public class TaskStore implements TaskRepository {
                 return task;
             } catch (Exception e) {
                 transaction.rollback();
+                log.error("Failed to save task: {}", task, e);
                 throw new RuntimeException("Failed to save task", e);
             }
         }
@@ -34,15 +39,17 @@ public class TaskStore implements TaskRepository {
         try (Session session = sf.openSession()) {
             return session.createQuery("FROM Task ORDER by id", Task.class).list();
         } catch (Exception e) {
+            log.error("Failed to retrieve all tasks", e);
             throw new RuntimeException("Failed to retrieve tasks from data base", e);
         }
     }
 
     @Override
-    public Optional<Task> findById(Integer taskId) {
+    public Task findById(Integer taskId) {
         try (Session session = sf.openSession()) {
-            return Optional.ofNullable(session.get(Task.class, taskId));
+            return session.get(Task.class, taskId);
         } catch (Exception e) {
+            log.error("Failed to retrieve task with id={}", taskId, e);
             throw new RuntimeException("Failed to retrieve from database", e);
         }
     }
@@ -52,7 +59,8 @@ public class TaskStore implements TaskRepository {
         try (Session session = sf.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                int updatedRows = session.createQuery("UPDATE Task SET description = : descr, done =: status WHERE id = : id ")
+                int updatedRows = session.createQuery("UPDATE Task SET title = :title, description = :descr, done =: status WHERE id = :id ")
+                        .setParameter("title", task.getTitle())
                         .setParameter("descr", task.getDescription())
                         .setParameter("id", task.getId())
                         .setParameter("status", task.isDone())
@@ -61,22 +69,25 @@ public class TaskStore implements TaskRepository {
                 return updatedRows > 0;
             } catch (Exception e) {
                 transaction.rollback();
+                log.error("Failed to update task {}", task,  e);
                 throw new RuntimeException("failed to update", e);
             }
         }
     }
 
     @Override
-    public void delete(Integer taskId) {
+    public boolean delete(Integer taskId) {
         try (Session session = sf.openSession()) {
             var transaction = session.beginTransaction();
             try {
-                session.createQuery("DELETE FROM Task WHERE id = :id")
+                int deletedRows = session.createQuery("DELETE FROM Task WHERE id = :id")
                         .setParameter("id", taskId)
                         .executeUpdate();
                 transaction.commit();
+                return deletedRows > 0;
             } catch (Exception e) {
                 transaction.rollback();
+                log.error("Failed to delete task id={}", taskId, e);
                 throw new RuntimeException("Failed to delete task", e);
             }
         }
@@ -85,10 +96,11 @@ public class TaskStore implements TaskRepository {
     @Override
     public Collection<Task> getCompleted() {
         try (Session session = sf.openSession()) {
-            return session.createQuery("FROM Task WHERE done =:done ORDER by id", Task.class)
+            return session.createQuery("FROM Task WHERE done = :done ORDER by id", Task.class)
                             .setParameter("done", true)
                     .list();
         } catch (Exception e) {
+            log.error("Failed to get Completed task", e);
             throw new RuntimeException("Failed to retrieve completed tasks from data base", e);
         }
     }
@@ -96,10 +108,11 @@ public class TaskStore implements TaskRepository {
     @Override
     public Collection<Task> getNew() {
         try (Session session = sf.openSession()) {
-            return session.createQuery("FROM Task WHERE done =:done ORDER by id", Task.class)
+            return session.createQuery("FROM Task WHERE done = :done ORDER by id", Task.class)
                     .setParameter("done", false)
                     .list();
         } catch (Exception e) {
+            log.error("Failed to retrieve new tasks", e);
             throw new RuntimeException("Failed to retrieve new tasks from data base", e);
         }
     }

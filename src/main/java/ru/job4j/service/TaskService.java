@@ -9,11 +9,11 @@ public interface TaskService {
     Task create(Task task);
     Collection<Task> findAll();
 
-    Optional<Task> findById(Integer id);
+    Task findById(Integer id);
 
     boolean update(Task task);
 
-    void delete(Integer id);
+    boolean delete(Integer id);
 
     Collection<Task> getCompleted();
 

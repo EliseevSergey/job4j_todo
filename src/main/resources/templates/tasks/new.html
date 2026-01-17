@@ -12,16 +12,26 @@
             <h1>Добавить новую задачу</h1>
 
             <form th:action="@{/tasks/create}" th:object="${task}" method="post">
-           <!-- <form th:action="@{/tasks/create}" method="post">-->
 
                 <!-- Название задачи -->
                 <div class="mb-3">
                     <label for="description" class="form-label"><b>Название задачи</b></label>
                     <input type="text"
                            class="form-control"
+                           id="title"
+                           name="title"
+                           placeholder="Введите название задачи"
+                           required>
+                </div>
+
+                <!-- Описание задачи -->
+                <div class="mb-3">
+                    <label for="description" class="form-label"><b>Описание задачи</b></label>
+                    <input type="text"
+                           class="form-control"
                            id="description"
                            name="description"
-                           placeholder="Введите название задачи"
+                           placeholder="Введите описание задачи"
                            required>
                 </div>
 

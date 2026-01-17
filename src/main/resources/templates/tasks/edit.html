@@ -15,15 +15,27 @@
                 <!-- Скрытое поле для ID -->
                 <input type="hidden" th:field="*{id}">
 
+                <!-- Название задачи -->
+                <div class="mb-3">
+                    <label for="title" class="form-label"><b>Название задачи</b></label>
+                    <input type="text"
+                           class="form-control"
+                           id="title"
+                           th:field="*{title}"
+                           placeholder="Введите название задачи"
+                           required>
+                </div>
+
                 <!-- Описание задачи -->
                 <div class="mb-3">
                     <label for="description" class="form-label"><b>Описание задачи</b></label>
-                    <input type="text"
+                    <textarea type="text"
                            class="form-control"
                            id="description"
                            th:field="*{description}"
                            placeholder="Введите описание задачи"
                            required>
+                    </textarea>
                 </div>
 
                 <!-- Статус выполнения -->

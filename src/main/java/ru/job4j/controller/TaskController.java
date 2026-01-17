@@ -15,39 +15,22 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public String getViewPageById(Model model, @PathVariable int id) {
-        var taskOptional = taskService.findById(id);
-        if (taskOptional.isEmpty()) {
-            model.addAttribute("message", "Задача с ID " + id + " не найдена");
-            return "error/404";
-        }
-        model.addAttribute("task", taskOptional.get());
+        var task = taskService.findById(id);
+        model.addAttribute("task", task);
         return "tasks/view";
     }
 
     @GetMapping("/{id}/edit")
     public String getEditForm(@PathVariable int id, Model model) {
-        var taskOptional = taskService.findById(id);
-        if (taskOptional.isEmpty()) {
-            model.addAttribute("message", "Задача с ID " + id + " не найдена");
-            return "error/404";
-        }
-        model.addAttribute("task", taskOptional.get());
+        var task = taskService.findById(id);
+        model.addAttribute("task", task);
         return "tasks/edit";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model) {
-        try {
-            boolean isUpdated = taskService.update(task);
-            if (!isUpdated) {
-                model.addAttribute("message", "Обновление не выполнено");
-                return "errors/409";
-            }
-            return "redirect:/index";
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "errors/404";
-        }
+    public String update(@ModelAttribute Task task) {
+        taskService.update(task);
+        return "redirect:/index";
     }
 
     @GetMapping("/new")
@@ -56,14 +39,9 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model) {
-        try {
-            taskService.create(task);
-            return "redirect:/index";
-        } catch (Exception e) {
-            model.addAttribute("message", e.getMessage());
-            return "errors/404";
-        }
+    public String create(@ModelAttribute Task task) {
+        taskService.create(task);
+        return "redirect:/index";
     }
 
     @PostMapping("/{id}/delete")
