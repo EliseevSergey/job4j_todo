@@ -7,7 +7,6 @@ import ru.job4j.model.Task;
 import ru.job4j.repository.TaskRepository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 public class SimpleTaskService implements TaskService {
@@ -29,7 +28,7 @@ public class SimpleTaskService implements TaskService {
 
     @Override
     public Task findById(Integer id) {
-        Task task = taskRepository.findById(id); // может вернуть null
+        Task task = taskRepository.findById(id);
         if (task == null) {
             throw new TaskNotFoundException("Задача с id " + id + " не найдена");
         }
@@ -38,9 +37,18 @@ public class SimpleTaskService implements TaskService {
 
     @Override
     public boolean update(Task task) {
-        boolean updated = taskRepository.update(task); // вызываем один раз
+        boolean updated = taskRepository.update(task);
         if (!updated) {
             throw new TaskUpdateException("Обновление задачи с id " + task.getId() + " не выполнено");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean markAsDone(Integer id) {
+        boolean updated = taskRepository.markAsDone(id);
+        if (!updated) {
+            throw new TaskUpdateException("Обновление статуса done задачи с id " + id + " не выполнено");
         }
         return true;
     }

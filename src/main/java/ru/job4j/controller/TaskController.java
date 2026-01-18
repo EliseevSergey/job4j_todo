@@ -33,6 +33,12 @@ public class TaskController {
         return "redirect:/index";
     }
 
+    @PostMapping("/{id}/complete")
+    public String markAsDone(@PathVariable int id) {
+        taskService.markAsDone(id);
+        return "redirect:/index";
+    }
+
     @GetMapping("/new")
     public String getCreationPage(Model model) {
         return "tasks/new";

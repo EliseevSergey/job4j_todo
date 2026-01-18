@@ -12,6 +12,8 @@ public interface TaskRepository {
 
     boolean update(Task task);
 
+    boolean markAsDone(Integer id);
+
     boolean delete(Integer taskId);
 
     Collection<Task> getCompleted();

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ru.job4j.handlers.TaskNotFoundException;
 import ru.job4j.handlers.TaskUpdateException;
 import ru.job4j.model.Task;
+
 import java.util.Collection;
 import java.util.Optional;
 
@@ -69,7 +70,25 @@ public class TaskStore implements TaskRepository {
                 return updatedRows > 0;
             } catch (Exception e) {
                 transaction.rollback();
-                log.error("Failed to update task {}", task,  e);
+                log.error("Failed to update task {}", task, e);
+                throw new RuntimeException("failed to update", e);
+            }
+        }
+    }
+
+    @Override
+    public boolean markAsDone(Integer taskId) {
+        try (Session session = sf.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                int updateRows = session.createQuery("UPDATE Task SET done = true WHERE id = :id")
+                        .setParameter("id", taskId)
+                        .executeUpdate();
+                transaction.commit();
+                return updateRows > 0;
+            } catch (Exception e) {
+                transaction.rollback();
+                log.error("Failed to set Done status", e);
                 throw new RuntimeException("failed to update", e);
             }
         }
@@ -97,7 +116,7 @@ public class TaskStore implements TaskRepository {
     public Collection<Task> getCompleted() {
         try (Session session = sf.openSession()) {
             return session.createQuery("FROM Task WHERE done = :done ORDER by id", Task.class)
-                            .setParameter("done", true)
+                    .setParameter("done", true)
                     .list();
         } catch (Exception e) {
             log.error("Failed to get Completed task", e);
@@ -116,4 +135,6 @@ public class TaskStore implements TaskRepository {
             throw new RuntimeException("Failed to retrieve new tasks from data base", e);
         }
     }
+
+
 }

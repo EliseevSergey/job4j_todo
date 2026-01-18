@@ -56,16 +56,9 @@
 
         <!-- Кнопка "Выполнено" (только если задача не выполнена) -->
         <form th:if="${!task.done}"
-              th:action="@{/tasks/update}"
+              th:action="@{/tasks/{id}/complete(id=${task.id})}"
               method="post"
               style="display: inline;">
-
-          <!-- Скрытые поля для передачи данных задачи -->
-          <input type="hidden" name="id" th:value="${task.id}">
-          <input type="hidden" name="title" th:value="${task.title}">
-          <input type="hidden" name="description" th:value="${task.description}">
-          <input type="hidden" name="done" value="true">
-
           <button type="submit" class="btn btn-success">Выполнить</button>
         </form>
 

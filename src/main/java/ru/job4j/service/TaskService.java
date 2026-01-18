@@ -19,5 +19,5 @@ public interface TaskService {
 
     Collection<Task> getNew();
 
-
+    boolean markAsDone(Integer id);
 }
