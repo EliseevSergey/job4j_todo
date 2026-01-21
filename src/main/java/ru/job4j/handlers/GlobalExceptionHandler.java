@@ -28,6 +28,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TaskUpdateException.class)
     public String handleUpdate(TaskUpdateException e, Model model) {
         log.error(e.getMessage(), e);
+        model.addAttribute("message", e.getMessage());
         return "errors/404";
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public String handleUserNotFound(UserNotFoundException e, Model model) {
+        log.info(e.getMessage(), e);
+        model.addAttribute("message", e.getMessage());
+        return "errors/401";
     }
 }

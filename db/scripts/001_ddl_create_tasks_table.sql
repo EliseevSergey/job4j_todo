@@ -1,4 +1,5 @@
-CREATE TABLE tasks (
+CREATE TABLE tasks
+(
     id SERIAL PRIMARY KEY,
     title TEXT,
     description TEXT,
