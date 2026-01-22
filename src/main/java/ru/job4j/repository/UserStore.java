@@ -6,7 +6,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+import ru.job4j.handlers.UserNotFoundException;
 import ru.job4j.model.User;
+
+import javax.persistence.PersistenceException;
 
 
 @Repository
@@ -26,7 +29,7 @@ public class UserStore implements UserRepository {
             } catch (Exception e) {
                 transaction.rollback();
                 log.error("Failed to create user: {}", user, e);
-                throw new RuntimeException("Failed to save user", e);
+                throw e;
             }
         }
     }
@@ -34,23 +37,17 @@ public class UserStore implements UserRepository {
     @Override
     public User findByLoginAndPassword(String login, String password) {
         try (Session session = sf.openSession()) {
-            return session.createQuery("FROM User WHERE login =: login AND password =: password", User.class)
+            User user = session.createQuery("FROM User WHERE login =: login AND password =: password", User.class)
                     .setParameter("login", login)
                     .setParameter("password", password)
                     .uniqueResult();
-        } catch (Exception e) {
+            if (user == null) {
+                throw new UserNotFoundException("Пользователь с логином '" + login + "' не найден или пароль неверен");
+            }
+            return user;
+        } catch (PersistenceException e) {
             log.error("Failed to retrieve user with login={}", login, e);
-            throw new RuntimeException("Failed to retrieve user from db", e);
+            throw e;
         }
-    }
-
-    @Override
-    public boolean update(User user) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(User user) {
-        return false;
     }
 }

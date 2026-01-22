@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.model.User;
 import ru.job4j.service.UserService;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -25,12 +24,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(Model model, @ModelAttribute User user) {
+    public String register(@ModelAttribute User user) {
         User savedUser = userService.save(user);
-        if (savedUser == null) {
-            model.addAttribute("message", "Пользователь с таким login уже существует");
-            return "errors/404";
-        }
         return "redirect:/users/login";
     }
 
@@ -42,10 +37,6 @@ public class UserController {
     @PostMapping("/login")
     public String loginUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
         User foundUser = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
-        if (foundUser == null) {
-            model.addAttribute("error", "Почта или пароль введены неверно");
-            return "users/login";
-        }
         HttpSession session = request.getSession();
         session.setAttribute("user", foundUser);
         return "redirect:/index";

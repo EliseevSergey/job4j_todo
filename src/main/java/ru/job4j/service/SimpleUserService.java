@@ -1,7 +1,9 @@
 package ru.job4j.service;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
+import ru.job4j.handlers.DuplicateLoginException;
 import ru.job4j.model.User;
 import ru.job4j.repository.UserRepository;
 
@@ -12,21 +14,15 @@ public class SimpleUserService implements UserService {
 
     @Override
     public User save(User user) {
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (ConstraintViolationException e) {
+            throw new DuplicateLoginException("Пользователь с логином '" + user.getLogin() + "' уже существует");
+        }
     }
 
     @Override
     public User findByLoginAndPassword(String login, String password) {
         return userRepository.findByLoginAndPassword(login, password);
-    }
-
-    @Override
-    public boolean update(User user) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(User user) {
-        return false;
     }
 }

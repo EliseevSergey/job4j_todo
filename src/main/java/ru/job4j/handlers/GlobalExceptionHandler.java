@@ -38,4 +38,11 @@ public class GlobalExceptionHandler {
         model.addAttribute("message", e.getMessage());
         return "errors/401";
     }
+
+    @ExceptionHandler(DuplicateLoginException.class)
+    public String handleLoginDuplication(DuplicateLoginException e, Model model) {
+        log.warn(e.getMessage());
+        model.addAttribute("message", e.getMessage());
+        return "errors/409";
+    }
 }

@@ -8,8 +8,4 @@ public interface UserService {
     User save(User user);
 
     User findByLoginAndPassword(String login, String password);
-
-    boolean update(User user);
-
-    boolean delete(User user);
 }
