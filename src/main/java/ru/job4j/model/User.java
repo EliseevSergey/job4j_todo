@@ -15,6 +15,7 @@ public class User {
     private Integer id;
     private String name;
     @EqualsAndHashCode.Include
+    @Column(nullable = false, unique = true)
     private String login;
     private String password;
 
