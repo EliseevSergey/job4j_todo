@@ -2,7 +2,6 @@ package ru.job4j.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,10 +34,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
+    public String loginUser(@ModelAttribute User user, HttpServletRequest request) {
         User foundUser = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
         HttpSession session = request.getSession();
         session.setAttribute("user", foundUser);
         return "redirect:/index";
+    }
+
+    @GetMapping("/logout")
+    public String logOutUser(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        return "redirect:/users/login";
     }
 }
