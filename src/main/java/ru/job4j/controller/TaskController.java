@@ -5,13 +5,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.model.Task;
+import ru.job4j.model.User;
 import ru.job4j.service.TaskService;
+import ru.job4j.service.UserService;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("/tasks")
 public class TaskController {
     private TaskService taskService;
+    private UserService userService;
 
     @GetMapping("/{id}")
     public String getViewPageById(Model model, @PathVariable int id) {
@@ -45,7 +50,9 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task) {
+    public String create(@ModelAttribute Task task, HttpSession httpSession) {
+        User loggedUser = (User) httpSession.getAttribute("user");
+        task.setUser(loggedUser);
         taskService.create(task);
         return "redirect:/index";
     }
