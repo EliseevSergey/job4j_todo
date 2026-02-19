@@ -36,7 +36,25 @@
                            required>
                 </div>
 
-                <!-- Статус выполнения (опционально) -->
+                <!-- Выпадающий список приоритетов -->
+                <div class="mb-3">
+                    <label for="priority" class="form-label"><b>Приоритет</b></label>
+                    <select class="form-select"
+                            id="priority"
+                            name="priority.id"
+                            required>
+                        <option value="">Выберите приоритет</option>
+                        <option th:each="priority : ${priorities}"
+                                th:value="${priority.id}"
+                                th:text="${priority.name + ' (позиция: ' + priority.position + ')'}">
+                        </option>
+                    </select>
+                    <small class="form-text text-muted">
+                        urgently - срочно (позиция 1), normal - обычный (позиция 2)
+                    </small>
+                </div>
+
+                        <!-- Статус выполнения (опционально) -->
                 <div class="mb-3">
                     <label class="form-label"><b>Статус выполнения</b></label>
                     <div class="form-check">

@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.model.Task;
 import ru.job4j.model.User;
+import ru.job4j.service.PriorityService;
 import ru.job4j.service.TaskService;
 import ru.job4j.service.UserService;
 
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpSession;
 public class TaskController {
     private TaskService taskService;
     private UserService userService;
+    private PriorityService priorityService;
 
     @GetMapping("/{id}")
     public String getViewPageById(Model model, @PathVariable int id) {
@@ -46,6 +48,7 @@ public class TaskController {
 
     @GetMapping("/new")
     public String getCreationPage(Model model) {
+        model.addAttribute("priorities", priorityService.findAll());
         return "tasks/new";
     }
 

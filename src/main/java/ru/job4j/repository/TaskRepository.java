@@ -3,7 +3,6 @@ package ru.job4j.repository;
 import ru.job4j.model.Task;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface TaskRepository {
     Task create(Task task);

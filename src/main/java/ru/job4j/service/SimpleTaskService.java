@@ -1,5 +1,6 @@
 package ru.job4j.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.handlers.TaskNotFoundException;
 import ru.job4j.handlers.TaskUpdateException;
@@ -8,12 +9,9 @@ import ru.job4j.repository.TaskRepository;
 import java.util.Collection;
 
 @Service
+@AllArgsConstructor
 public class SimpleTaskService implements TaskService {
     private final TaskRepository taskRepository;
-
-    public SimpleTaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
 
     @Override
     public Task create(Task task) {

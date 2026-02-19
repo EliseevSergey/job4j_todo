@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Tasks")
+@Table(name = "tasks")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Task {
@@ -22,4 +22,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "priority_id")
+    private Priority priority;
 }

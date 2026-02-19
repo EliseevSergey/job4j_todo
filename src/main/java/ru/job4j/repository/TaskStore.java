@@ -24,12 +24,12 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("FROM Task ORDER BY id ASC", Task.class);
+        return crudRepository.query("FROM Task t JOIN FETCH t.priority ORDER BY t.id ASC", Task.class);
     }
 
     @Override
     public Task findById(Integer taskId) {
-        return crudRepository.query("FROM Task WHERE id = :fId", Task.class, Map.of("fId", taskId));
+        return crudRepository.query("FROM Task t JOIN FETCH t.priority WHERE t.id = :fId", Task.class, Map.of("fId", taskId));
     }
 
     @Override
