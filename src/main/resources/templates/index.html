@@ -56,6 +56,7 @@
                         <th scope="col">Задача</th>
                         <th scope="col">Описание</th>
                         <th scope="col">Приоритет</th>
+                        <th scope="col">Категория</th>
                         <th scope="col">Автор</th>
                         <th scope="col">Дата Создания</th>
                         <th scope="col">Состояние</th>
@@ -69,6 +70,7 @@
                         </td>
                         <td th:text="${task.description}"/>
                         <td th:text="${task.priority.name}"/>
+                        <td th:text="${task.category.name}"/>
                         <td th:text="${task.user != null ? task.user.name : 'Не назначен'}"/>
                         <td th:text="${#temporals.format(task.created, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td th:text="${task.done}"/>
