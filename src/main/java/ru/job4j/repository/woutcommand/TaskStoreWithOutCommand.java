@@ -44,6 +44,19 @@ public class TaskStoreWithOutCommand implements TaskRepository {
     }
 
     @Override
+    public Collection<Task> findAllWithDetails() {
+        try (Session session = sf.openSession()) {
+            return session.createQuery("SELECT DISTINCT t FROM Task t "
+                    + "LEFT JOIN FETCH t.priority "
+                    + "LEFT JOIN FETCH t.categories "
+                    + "ORDER by t.id ASC", Task.class).list();
+        } catch (Exception e) {
+            log.error("Failed to retrieve all tasks", e);
+            throw new RuntimeException("Failed to retrieve tasks from data base", e);
+        }
+    }
+
+    @Override
     public Task findById(Integer taskId) {
         try (Session session = sf.openSession()) {
             return session.get(Task.class, taskId);

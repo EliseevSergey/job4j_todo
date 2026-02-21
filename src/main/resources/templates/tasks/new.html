@@ -54,6 +54,18 @@
                     </small>
                 </div>
 
+                <div class="mb-3">
+                    <label for="category"><b>Категория</b></label>
+                    <div id="category">
+                        <div th:each="category : ${categories}">
+                            <label>
+                                <input type="checkbox" name="categoryIds" th:value="${category.id}">
+                                <span th:text="${category.name}"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                         <!-- Статус выполнения (опционально) -->
                 <div class="mb-3">
                     <label class="form-label"><b>Статус выполнения</b></label>
@@ -71,7 +83,7 @@
                 <!-- Кнопки действий -->
                 <div class="mt-4">
                     <!-- Кнопка "Назад к списку" -->
-                    <a th:href="@{/tasks}" class="btn btn-secondary">Назад к списку</a>
+                    <a th:href="@{/index}" class="btn btn-secondary">Назад к списку</a>
 
                     <!-- Кнопка "Создать" -->
                     <button type="submit" class="btn btn-primary">Создать задачу</button>

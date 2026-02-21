@@ -56,6 +56,7 @@
                         <th scope="col">Задача</th>
                         <th scope="col">Описание</th>
                         <th scope="col">Приоритет</th>
+                        <th scope="col">Категории</th>
                         <th scope="col">Автор</th>
                         <th scope="col">Дата Создания</th>
                         <th scope="col">Состояние</th>
@@ -69,6 +70,18 @@
                         </td>
                         <td th:text="${task.description}"/>
                         <td th:text="${task.priority.name}"/>
+                        <td>
+                            <span th:if="${task.categories != null and !task.categories.isEmpty()}">
+                                <span th:each="category, iterStat : ${task.categories}">
+                                    <span class="badge bg-info text-dark" th:text="${category.name}">Категория</span>
+                                    <span th:if="${!iterStat.last}"> </span>
+                                </span>
+                            </span>
+                            <span th:unless="${task.categories != null and !task.categories.isEmpty()}"
+                                  class="text-muted">
+                                Нет категорий
+                            </span>
+                        </td>
                         <td th:text="${task.user != null ? task.user.name : 'Не назначен'}"/>
                         <td th:text="${#temporals.format(task.created, 'yyyy-MM-dd HH:mm:ss')}"></td>
                         <td th:text="${task.done}"/>

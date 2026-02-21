@@ -13,7 +13,7 @@ public class IndexController {
 
     @GetMapping({"/", "/index"})
     public String getAll(Model model) {
-        model.addAttribute("tasks", taskService.findAll());
+        model.addAttribute("tasks", taskService.findAllWithDetails());
         model.addAttribute("filter", "all");
         return "index";
     }

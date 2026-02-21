@@ -81,4 +81,20 @@ public class CrudRepository {
                 .list();
         return tx(command);
     }
+
+    public <R> List<R> queryListWithParam(String query, Class<R> cl, Map<String, Object> args) {
+        Function<Session, List<R>> command = session -> {
+            Query<R> sq = session.createQuery(query, cl);
+            for (Map.Entry<String, Object> arg : args.entrySet()) {
+                sq.setParameter(arg.getKey(), arg.getValue());
+            }
+            return sq.list();
+        };
+        return tx(command);
+    }
+
+
+
+
+
 }

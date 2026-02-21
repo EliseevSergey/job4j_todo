@@ -24,6 +24,12 @@ public class SimpleTaskService implements TaskService {
     }
 
     @Override
+    public Collection<Task> findAllWithDetails() {
+        return taskRepository.findAllWithDetails();
+    }
+
+
+    @Override
     public Task findById(Integer id) {
         Task task = taskRepository.findById(id);
         if (task == null) {

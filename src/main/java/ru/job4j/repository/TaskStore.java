@@ -24,12 +24,21 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("FROM Task t JOIN FETCH t.priority ORDER BY t.id ASC", Task.class);
+        return crudRepository.query("FROM Task t ORDER BY t.id ASC", Task.class);
     }
 
     @Override
+    public Collection<Task> findAllWithDetails() {
+        return crudRepository.query("SELECT DISTINCT t FROM Task t "
+                + "LEFT JOIN FETCH t.priority "
+                + "LEFT JOIN FETCH t.categories "
+                + "ORDER by t.id ASC", Task.class);
+    };
+
+    @Override
     public Task findById(Integer taskId) {
-        return crudRepository.query("FROM Task t JOIN FETCH t.priority WHERE t.id = :fId", Task.class, Map.of("fId", taskId));
+        return crudRepository.query("FROM Task t JOIN FETCH t.priority WHERE t.id = :fId",
+                Task.class, Map.of("fId", taskId));
     }
 
     @Override
@@ -56,13 +65,19 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public Collection<Task> getCompleted() {
-        return crudRepository.query("FROM Task WHERE done = true ORDER BY id ASC",
+        return crudRepository.query("FROM Task t "
+                        + "JOIN FETCH t.priority "
+                        + "JOIN FETCH t.categories "
+                        + "WHERE t.done = true ORDER BY t.id ASC",
                 Task.class);
     }
 
     @Override
     public Collection<Task> getNew() {
-        return crudRepository.query("FROM Task WHERE done = false ORDER BY id ASC",
+        return crudRepository.query("FROM Task t "
+                        + "JOIN FETCH t.priority "
+                        + "JOIN FETCH t.categories "
+                        + "WHERE t.done = false ORDER BY t.id ASC",
                 Task.class);
     }
 }

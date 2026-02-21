@@ -6,7 +6,11 @@ import java.util.Collection;
 
 public interface TaskRepository {
     Task create(Task task);
+
     Collection<Task> findAll();
+
+    Collection<Task> findAllWithDetails();
+
     Task findById(Integer id);
 
     boolean update(Task task);
