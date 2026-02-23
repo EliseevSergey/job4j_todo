@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CategoryService {
     Collection<Category> findAll();
-    Collection<Category> findAllById(List<Integer> ids);
+    List<Category> findAllById(List<Integer> ids);
 
 }

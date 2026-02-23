@@ -7,5 +7,5 @@ import java.util.List;
 public interface CategoryRepository {
     Collection<Category> findAll();
 
-    Collection<Category> findAllById(List<Integer> ids);
+    List<Category> findAllById(List<Integer> ids);
 }

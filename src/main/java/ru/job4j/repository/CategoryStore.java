@@ -19,7 +19,7 @@ public class CategoryStore implements CategoryRepository {
     }
 
     @Override
-    public Collection<Category> findAllById(List<Integer> ids) {
+    public List<Category> findAllById(List<Integer> ids) {
         return crudRepository.queryListWithParam("FROM Category WHERE id IN :ids ORDER BY name",
                 Category.class,
                 Map.of("ids", ids));

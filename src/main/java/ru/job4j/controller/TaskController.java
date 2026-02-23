@@ -64,7 +64,7 @@ public class TaskController {
                          HttpSession httpSession) {
         User loggedUser = (User) httpSession.getAttribute("user");
         task.setUser(loggedUser);
-        List<Category> selectedCategory = new ArrayList<>(categoryService.findAllById(categoriesList));
+        List<Category> selectedCategory = categoryService.findAllById(categoriesList);
         task.setCategories(selectedCategory);
         taskService.create(task);
         return "redirect:/index";

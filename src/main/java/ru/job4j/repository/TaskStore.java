@@ -65,7 +65,7 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public Collection<Task> getCompleted() {
-        return crudRepository.query("FROM Task t "
+        return crudRepository.query("SELECT DISTINCT t FROM Task t "
                         + "JOIN FETCH t.priority "
                         + "JOIN FETCH t.categories "
                         + "WHERE t.done = true ORDER BY t.id ASC",
@@ -74,7 +74,7 @@ public class TaskStore implements TaskRepository {
 
     @Override
     public Collection<Task> getNew() {
-        return crudRepository.query("FROM Task t "
+        return crudRepository.query("SELECT DISTINCT t FROM Task t "
                         + "JOIN FETCH t.priority "
                         + "JOIN FETCH t.categories "
                         + "WHERE t.done = false ORDER BY t.id ASC",
