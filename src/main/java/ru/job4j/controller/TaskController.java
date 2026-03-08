@@ -11,6 +11,7 @@ import ru.job4j.service.CategoryService;
 import ru.job4j.service.PriorityService;
 import ru.job4j.service.TaskService;
 import ru.job4j.service.UserService;
+import ru.job4j.utility.TimeUtility;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -21,21 +22,22 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
     private TaskService taskService;
-    private UserService userService;
     private PriorityService priorityService;
     private CategoryService categoryService;
 
     @GetMapping("/{id}")
-    public String getViewPageById(Model model, @PathVariable int id) {
+    public String getViewPageById(Model model, @PathVariable int id, HttpSession session) {
         var task = taskService.findById(id);
-        model.addAttribute("task", task);
+        var loggedUser = (User) session.getAttribute("user");
+        model.addAttribute("task", TimeUtility.convertTaskToUserTimeZone(task, loggedUser.getTimezone()));
         return "tasks/view";
     }
 
     @GetMapping("/{id}/edit")
-    public String getEditForm(@PathVariable int id, Model model) {
+    public String getEditForm(@PathVariable int id, Model model, HttpSession session) {
         var task = taskService.findById(id);
-        model.addAttribute("task", task);
+        var loggedUser = (User) session.getAttribute("user");
+        model.addAttribute("task", TimeUtility.convertTaskToUserTimeZone(task, loggedUser.getTimezone()));
         return "tasks/edit";
     }
 
@@ -61,8 +63,8 @@ public class TaskController {
     @PostMapping("/create")
     public String create(@ModelAttribute Task task,
                          @RequestParam (name = "categoryIds") List<Integer> categoriesList,
-                         HttpSession httpSession) {
-        User loggedUser = (User) httpSession.getAttribute("user");
+                         HttpSession session) {
+        var loggedUser = (User) session.getAttribute("user");
         task.setUser(loggedUser);
         List<Category> selectedCategory = categoryService.findAllById(categoriesList);
         task.setCategories(selectedCategory);
@@ -77,15 +79,21 @@ public class TaskController {
     }
 
     @GetMapping("/completed")
-    public String getCompleted(Model model) {
-        model.addAttribute("tasks", taskService.getCompleted());
+    public String getCompleted(Model model, HttpSession session) {
+        var loggedUser = (User) session.getAttribute("user");
+        var tasks = taskService.getCompleted();
+        var tasksWithUserZones = TimeUtility.convertTasksToUserTimeZone(tasks, loggedUser.getTimezone());
+        model.addAttribute("tasks", tasksWithUserZones);
         model.addAttribute("filter", "completed");
         return "index";
     }
 
     @GetMapping("/new-tasks")
-    public String getNew(Model model) {
-        model.addAttribute("tasks", taskService.getNew());
+    public String getNew(Model model, HttpSession session) {
+        var loggedUser = (User) session.getAttribute("user");
+        var tasks = taskService.getNew();
+        var tasksWithUserZones = TimeUtility.convertTasksToUserTimeZone(tasks, loggedUser.getTimezone());
+        model.addAttribute("tasks", tasksWithUserZones);
         model.addAttribute("filter", "new");
         return "index";
     }

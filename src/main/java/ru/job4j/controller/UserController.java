@@ -2,14 +2,17 @@ package ru.job4j.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.model.User;
 import ru.job4j.service.UserService;
+import ru.job4j.utility.TimeUtility;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TimeZone;
 
 @Controller
 @AllArgsConstructor
@@ -18,12 +21,17 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/register")
-    public String getRegistrationPage() {
+    public String getRegistrationPage(Model model) {
+        model.addAttribute("zones", TimeUtility.getAllTimeZones());
+        model.addAttribute("defaultZone", TimeUtility.getDefaultTimeZone());
         return "users/register";
     }
 
     @PostMapping("/register")
     public String register(@ModelAttribute User user) {
+        if (user.getTimezone() == null || user.getTimezone().isEmpty()) {
+            user.setTimezone(TimeZone.getDefault().getID());
+        }
         User savedUser = userService.save(user);
         return "redirect:/users/login";
     }
@@ -46,5 +54,13 @@ public class UserController {
         HttpSession session = request.getSession();
         session.invalidate();
         return "redirect:/users/login";
+    }
+
+    private static List<TimeZone> getAllTimeZones() {
+        var zones = new ArrayList<TimeZone>();
+        for (String timeId : TimeZone.getAvailableIDs()) {
+            zones.add(TimeZone.getTimeZone(timeId));
+        }
+        return zones;
     }
 }

@@ -18,6 +18,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String login;
     private String password;
+    @Column(name = "user_zone")
+
+    private String timezone;
 
     @Override
     public String toString() {

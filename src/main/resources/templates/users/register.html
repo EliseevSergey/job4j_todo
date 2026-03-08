@@ -33,12 +33,40 @@
                 <label for="password" class="form-label"><b>Пароль</b></label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
+
+            <div class="mb-3">
+                <label for="zone" class="form-label"><b>Часовой пояс</b></label>
+                <select class="form-select"
+                        id="zone"
+                        name="timezone">
+                    <!-- Дефолтный часовой пояс показываем первым и выбранным -->
+                    <option th:value="${defaultZone.ID}"
+                            th:text="'🌐 ' + ${defaultZone.getDisplayName()} + ' (системный)'"
+                            th:selected="true">
+                    </option>
+
+                    <!-- Разделитель -->
+                    <option value="" disabled>───────── Другие пояса ─────────</option>
+
+                    <!-- Все остальные часовые пояса -->
+                    <option th:each="zone : ${zones}"
+                            th:value="${zone.ID}"
+                            th:text="${zone.getDisplayName()}"
+                            th:unless="${zone.ID.equals(defaultZone.ID)}">
+                    </option>
+                </select>
+                <div class="form-text text-muted">
+                    Системный часовой пояс выбран по умолчанию. Вы можете изменить его на любой другой.
+                </div>
+            </div>
+
             <div class="mb-3 row">
                 <div class="col-6"></div>
                 <div class="col-6">
                     <div class="row">
                         <div class="col-6"><a class="btn btn-danger w-100" th:href="@{/register}">Отмена</a></div>
-                        <div class="col-6"><button class="btn btn-primary w-100" type="submit">Сохранить</button>
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100" type="submit">Сохранить</button>
                         </div>
                     </div>
                 </div>
